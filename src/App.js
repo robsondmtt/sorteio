@@ -7,11 +7,10 @@ function App() {
   const [sorteado, setSorteado] = useState(null); // Nome sorteado
   const [mudando, setMudando] = useState(false); // Flag para controlar a mudança rápida dos nomes
 
-  // Função para sortear um nome aleatório do array
+ // Função para sortear um nome aleatório do array
   const sortearNome = () => {
     const indiceSorteado = Math.floor(Math.random() * nomes.length);
     setSorteado(nomes[indiceSorteado]);
-    setMudando(false);
   };
 
   // UseEffect para controlar a mudança rápida dos nomes
@@ -20,6 +19,8 @@ function App() {
 
     if (mudando) {
       intervalId = setInterval(sortearNome, 100);
+    } else {
+      clearInterval(intervalId);
     }
 
     return () => {
