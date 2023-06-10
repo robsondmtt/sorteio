@@ -4,38 +4,39 @@ import { useEffect, useState } from 'react';
 function App() {
 
   const nomes = ['João', 'Maria', 'Pedro', 'Ana', 'Carlos']; // Array de nomes pré-definidos
-  const [sorteado, setSorteado] = useState(null); // Nome sorteado
-  const [mudando, setMudando] = useState(false); // Flag para controlar a mudança rápida dos nomes
+  const [nomeAtual, setNomeAtual] = useState(''); // Nome atual que está sendo exibido
+  const [mudando, setMudando] = useState(true); // Flag para controlar a mudança rápida dos nomes
 
- // Função para sortear um nome aleatório do array
-  const sortearNome = () => {
-    const indiceSorteado = Math.floor(Math.random() * nomes.length);
-    setSorteado(nomes[indiceSorteado]);
+ // UseEffect para controlar a mudança rápida dos nomes
+ useEffect(() => {
+  let intervalId;
+
+  if (mudando) {
+    intervalId = setInterval(() => {
+      const indiceSorteado = Math.floor(Math.random() * nomes.length);
+      setNomeAtual(nomes[indiceSorteado]);
+    }, 100);
+  }
+
+  return () => {
+    clearInterval(intervalId);
   };
+}, [mudando, nomes]);
 
-  // UseEffect para controlar a mudança rápida dos nomes
-  useEffect(() => {
-    let intervalId;
-
-    if (mudando) {
-      intervalId = setInterval(sortearNome, 100);
-    } else {
-      clearInterval(intervalId);
-    }
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [mudando]);
+// Função para parar a mudança dos nomes
+const pararSorteio = () => {
+  setMudando(false);
+};
 
   return (
     <div className="App">
       <h1>Sorteio de Nomes</h1>
-      <div className="nomes-container">{mudando ? 'Sorteando...' : sorteado}</div>
-      <button onClick={() => setMudando(!mudando)}>
-        {mudando ? 'Parar' : 'Sortear'}
-      </button>
-
+      <div className="nomes-container">{nomeAtual}</div>
+      {mudando && (
+        <button onClick={pararSorteio}>
+          Parar
+        </button>
+      )}
     </div>
   );
 }
